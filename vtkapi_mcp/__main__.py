@@ -35,5 +35,10 @@ async def main():
     await server.run()
 
 
-if __name__ == "__main__":
+def cli():
+    """Console script entry point for vtkapi-mcp."""
     asyncio.run(main())
+
+
+if __name__ == "__main__":
+    cli()

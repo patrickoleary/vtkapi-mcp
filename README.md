@@ -16,14 +16,23 @@ This module provides automatic validation of generated VTK code to catch API hal
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Install the Package
+
+From PyPI (recommended once published):
 
 ```bash
-./setup.sh          # Production only (MCP library)
-./setup.sh --dev    # Include testing tools (pytest, ruff)
+pip install vtkapi-mcp
 ```
 
-This creates a virtual environment and installs dependencies.
+For local development or to include the testing/tooling stack:
+
+```bash
+pip install -e '.[dev]'
+```
+
+> **Note:** The 64 MB `data/vtk-python-docs.jsonl` file is required at runtime but is not bundled in the wheel. Place it under `data/` (or pass `--api-docs /path/to/file`) before launching the MCP server.
+
+Prefer automation? `./setup.sh` still creates a `.venv`, installs runtime deps, and optionally dev extras (`./setup.sh --dev`).
 
 ### 2. Test MCP Integration (Optional)
 
