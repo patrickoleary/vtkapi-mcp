@@ -45,7 +45,7 @@ class TestAsyncServer:
         from vtkapi_mcp.server.tools import get_tool_definitions
         tools = get_tool_definitions()
         
-        assert len(tools) == 5
+        assert len(tools) == 11
     
     async def test_call_tool_unknown(self, temp_api_docs_file):
         """Test calling unknown tool returns error"""

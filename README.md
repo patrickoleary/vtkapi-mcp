@@ -41,7 +41,7 @@ source .venv/bin/activate
 python demo_mcp_integration.py
 ```
 
-This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 5 MCP tools and error detection.
+This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 11 MCP tools and error detection.
 
 ### 3. Configure MCP Client
 
@@ -65,7 +65,7 @@ Add to your MCP settings (e.g., Claude Desktop config):
 
 ### 4. Use VTK Tools
 
-The MCP server provides 5 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
+The MCP server provides 11 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
 
 ---
 
@@ -216,7 +216,7 @@ Validate and correct VTK import statements.
 ```
 
 ### 4. `vtk_get_method_info`
-Get documentation for a specific method.
+Get full information about a specific method including section context.
 
 **Input:**
 ```json
@@ -231,7 +231,143 @@ Get documentation for a specific method.
 {
   "class_name": "vtkPolyDataMapper",
   "method_name": "SetInputData",
-  "documentation": "SetInputData(vtkDataObject) - Set the input data..."
+  "content": "SetInputData(vtkDataObject) - Set the input data...",
+  "section": "Methods defined here"
+}
+```
+
+### 5. `vtk_get_method_doc`
+Get just the docstring for a specific method.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "method_name": "SetInputData"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "method_name": "SetInputData",
+  "docstring": "SetInputData(vtkDataObject) - Set the input data...",
+  "found": true
+}
+```
+
+### 6. `vtk_get_class_doc`
+Get the class documentation string.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "class_doc": "vtkPolyDataMapper - map vtkPolyData to graphics primitives. Superclass: vtkMapper",
+  "found": true
+}
+```
+
+### 7. `vtk_get_class_synopsis`
+Get a brief synopsis/summary of what a class does.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "synopsis": "Maps polygonal data (vtkPolyData) to graphics primitives for rendering.",
+  "found": true
+}
+```
+
+### 8. `vtk_get_class_action_phrase`
+Get the action phrase describing what a class does.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "action_phrase": "polygon mapping",
+  "found": true
+}
+```
+
+### 9. `vtk_get_class_role`
+Get the functional role/category of a class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "role": "rendering",
+  "found": true
+}
+```
+
+### 10. `vtk_get_class_visibility`
+Get the visibility/exposure level of a class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "visibility": "likely",
+  "found": true
+}
+```
+
+### 11. `vtk_get_module_classes`
+List all classes in a specific module.
+
+**Input:**
+```json
+{
+  "module": "vtkmodules.vtkRenderingCore"
+}
+```
+
+**Output:**
+```json
+{
+  "module": "vtkmodules.vtkRenderingCore",
+  "classes": ["vtkActor", "vtkPolyDataMapper", ...],
+  "count": 42
 }
 ```
 
@@ -301,10 +437,14 @@ Each line is a VTK class documentation in JSON format:
 
 ```json
 {
-  "class": "vtkPolyDataMapper",
-  "module": "vtkmodules.vtkRenderingCore",
-  "methods": ["SetInputData", "GetInput", "Update", ...],
-  "documentation": "Full class documentation..."
+  "class_name": "vtkPolyDataMapper",
+  "module_name": "vtkmodules.vtkRenderingCore",
+  "class_doc": "vtkPolyDataMapper - map vtkPolyData to graphics primitives. Superclass: vtkMapper",
+  "synopsis": "Maps polygonal data (vtkPolyData) to graphics primitives for rendering.",
+  "action_phrase": "polygon mapping",
+  "role": "rendering",
+  "visibility": "likely",
+  "structured_docs": { "sections": { ... } }
 }
 ```
 

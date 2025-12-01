@@ -50,6 +50,24 @@ class VTKAPIMCPServer:
             elif name == "vtk_get_method_info":
                 return self._handle_get_method_info(arguments)
             
+            elif name == "vtk_get_method_doc":
+                return self._handle_get_method_doc(arguments)
+            
+            elif name == "vtk_get_class_doc":
+                return self._handle_get_class_doc(arguments)
+            
+            elif name == "vtk_get_class_synopsis":
+                return self._handle_get_class_synopsis(arguments)
+            
+            elif name == "vtk_get_class_action_phrase":
+                return self._handle_get_class_action_phrase(arguments)
+            
+            elif name == "vtk_get_class_role":
+                return self._handle_get_class_role(arguments)
+            
+            elif name == "vtk_get_class_visibility":
+                return self._handle_get_class_visibility(arguments)
+            
             else:
                 return [TextContent(type="text", text=f"Unknown tool: {name}")]
     
@@ -114,6 +132,123 @@ class VTKAPIMCPServer:
                 "found": False
             }
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_method_doc(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_method_doc tool call - returns just the docstring"""
+        class_name = arguments["class_name"]
+        method_name = arguments["method_name"]
+        doc = self.api_index.get_method_doc(class_name, method_name)
+        
+        if doc is not None:
+            result = {
+                "class_name": class_name,
+                "method_name": method_name,
+                "docstring": doc,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Method '{method_name}' not found in class '{class_name}'",
+                "class_name": class_name,
+                "method_name": method_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_doc(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_doc tool call"""
+        class_name = arguments["class_name"]
+        doc = self.api_index.get_class_doc(class_name)
+        
+        if doc is not None:
+            result = {
+                "class_name": class_name,
+                "class_doc": doc,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_synopsis(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_synopsis tool call"""
+        class_name = arguments["class_name"]
+        synopsis = self.api_index.get_class_synopsis(class_name)
+        
+        if synopsis is not None:
+            result = {
+                "class_name": class_name,
+                "synopsis": synopsis,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_action_phrase(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_action_phrase tool call"""
+        class_name = arguments["class_name"]
+        action_phrase = self.api_index.get_class_action_phrase(class_name)
+        
+        if action_phrase is not None:
+            result = {
+                "class_name": class_name,
+                "action_phrase": action_phrase,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_role(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_role tool call"""
+        class_name = arguments["class_name"]
+        role = self.api_index.get_class_role(class_name)
+        
+        if role is not None:
+            result = {
+                "class_name": class_name,
+                "role": role,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_visibility(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_visibility tool call"""
+        class_name = arguments["class_name"]
+        visibility = self.api_index.get_class_visibility(class_name)
+        
+        if visibility is not None:
+            result = {
+                "class_name": class_name,
+                "visibility": visibility,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     async def run(self):
         """Run the MCP server"""

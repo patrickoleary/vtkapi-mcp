@@ -80,6 +80,69 @@ class TestVTKAPIIndex:
         """Test getting method info for non-existent class"""
         info = api_index.get_method_info("vtkFakeClass", "SetInputData")
         assert info is None
+    
+    def test_get_method_doc_exists(self, api_index):
+        """Test getting method docstring for existing method"""
+        doc = api_index.get_method_doc("vtkPolyDataMapper", "SetInputData")
+        assert doc is not None
+        assert "SetInputData" in doc
+    
+    def test_get_method_doc_not_exists(self, api_index):
+        """Test getting method docstring for non-existent method"""
+        doc = api_index.get_method_doc("vtkPolyDataMapper", "FakeMethod")
+        assert doc is None
+    
+    def test_get_class_doc_exists(self, api_index):
+        """Test getting class doc for existing class"""
+        doc = api_index.get_class_doc("vtkPolyDataMapper")
+        assert doc is not None
+        assert "vtkPolyDataMapper" in doc
+    
+    def test_get_class_doc_not_exists(self, api_index):
+        """Test getting class doc for non-existent class"""
+        doc = api_index.get_class_doc("vtkFakeClass")
+        assert doc is None
+    
+    def test_get_class_synopsis_exists(self, api_index):
+        """Test getting class synopsis for existing class"""
+        synopsis = api_index.get_class_synopsis("vtkPolyDataMapper")
+        assert synopsis is not None
+        assert len(synopsis) > 0
+    
+    def test_get_class_synopsis_not_exists(self, api_index):
+        """Test getting class synopsis for non-existent class"""
+        synopsis = api_index.get_class_synopsis("vtkFakeClass")
+        assert synopsis is None
+    
+    def test_get_class_action_phrase_exists(self, api_index):
+        """Test getting class action phrase for existing class"""
+        phrase = api_index.get_class_action_phrase("vtkPolyDataMapper")
+        assert phrase == "polygon mapping"
+    
+    def test_get_class_action_phrase_not_exists(self, api_index):
+        """Test getting class action phrase for non-existent class"""
+        phrase = api_index.get_class_action_phrase("vtkFakeClass")
+        assert phrase is None
+    
+    def test_get_class_role_exists(self, api_index):
+        """Test getting class role for existing class"""
+        role = api_index.get_class_role("vtkPolyDataMapper")
+        assert role == "rendering"
+    
+    def test_get_class_role_not_exists(self, api_index):
+        """Test getting class role for non-existent class"""
+        role = api_index.get_class_role("vtkFakeClass")
+        assert role is None
+    
+    def test_get_class_visibility_exists(self, api_index):
+        """Test getting class visibility for existing class"""
+        visibility = api_index.get_class_visibility("vtkPolyDataMapper")
+        assert visibility == "likely"
+    
+    def test_get_class_visibility_not_exists(self, api_index):
+        """Test getting class visibility for non-existent class"""
+        visibility = api_index.get_class_visibility("vtkFakeClass")
+        assert visibility is None
 
 
 class TestAPIIndexComprehensive:

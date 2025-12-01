@@ -47,12 +47,17 @@ class VTKAPIIndex:
                 content = doc.get('content', '')
                 module = doc.get('module_name', '')  # Raw format uses 'module_name' not 'module'
                 
-                # Store class info
+                # Store class info with new fields from updated JSONL format
                 self.classes[class_name] = {
                     'class_name': class_name,
                     'module': module,
                     'content': content,
-                    'metadata': doc
+                    'metadata': doc,
+                    'class_doc': doc.get('class_doc', ''),
+                    'synopsis': doc.get('synopsis', ''),
+                    'action_phrase': doc.get('action_phrase', ''),
+                    'role': doc.get('role', ''),
+                    'visibility': doc.get('visibility', '')
                 }
                 
                 # Index by module
@@ -145,4 +150,46 @@ class VTKAPIIndex:
                 'content': '\n'.join(method_lines)
             }
         
+        return None
+    
+    def get_method_doc(self, class_name: str, method_name: str) -> Optional[str]:
+        """Get just the docstring for a specific method of a class"""
+        info = self.get_method_info(class_name, method_name)
+        if info:
+            return info.get('content', '')
+        return None
+    
+    def get_class_doc(self, class_name: str) -> Optional[str]:
+        """Get the class documentation string for a VTK class"""
+        info = self.classes.get(class_name)
+        if info:
+            return info.get('class_doc', '')
+        return None
+    
+    def get_class_synopsis(self, class_name: str) -> Optional[str]:
+        """Get a brief synopsis/summary of what a VTK class does"""
+        info = self.classes.get(class_name)
+        if info:
+            return info.get('synopsis', '')
+        return None
+    
+    def get_class_action_phrase(self, class_name: str) -> Optional[str]:
+        """Get the action phrase describing what a VTK class does"""
+        info = self.classes.get(class_name)
+        if info:
+            return info.get('action_phrase', '')
+        return None
+    
+    def get_class_role(self, class_name: str) -> Optional[str]:
+        """Get the functional role/category of a VTK class"""
+        info = self.classes.get(class_name)
+        if info:
+            return info.get('role', '')
+        return None
+    
+    def get_class_visibility(self, class_name: str) -> Optional[str]:
+        """Get the visibility/exposure level of a VTK class"""
+        info = self.classes.get(class_name)
+        if info:
+            return info.get('visibility', '')
         return None

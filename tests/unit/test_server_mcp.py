@@ -92,6 +92,99 @@ class TestVTKAPIMCPServer:
         
         assert len(result) == 1
         assert "not found" in result[0].text
+    
+    def test_handle_get_method_doc_exists(self, temp_api_docs_file):
+        """Test getting existing method docstring"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_method_doc({
+            "class_name": "vtkPolyDataMapper",
+            "method_name": "SetInputData"
+        })
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert "docstring" in info
+    
+    def test_handle_get_method_doc_not_exists(self, temp_api_docs_file):
+        """Test getting non-existent method docstring"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_method_doc({
+            "class_name": "vtkPolyDataMapper",
+            "method_name": "FakeMethod"
+        })
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
+    
+    def test_handle_get_class_doc_exists(self, temp_api_docs_file):
+        """Test getting existing class doc"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_doc({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert "class_doc" in info
+        assert "vtkPolyDataMapper" in info["class_doc"]
+    
+    def test_handle_get_class_doc_not_exists(self, temp_api_docs_file):
+        """Test getting non-existent class doc"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_doc({"class_name": "vtkFakeClass"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
+    
+    def test_handle_get_class_synopsis(self, temp_api_docs_file):
+        """Test getting class synopsis"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_synopsis({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert "synopsis" in info
+    
+    def test_handle_get_class_action_phrase(self, temp_api_docs_file):
+        """Test getting class action phrase"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_action_phrase({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["action_phrase"] == "polygon mapping"
+    
+    def test_handle_get_class_role(self, temp_api_docs_file):
+        """Test getting class role"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_role({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["role"] == "rendering"
+    
+    def test_handle_get_class_visibility(self, temp_api_docs_file):
+        """Test getting class visibility"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_visibility({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["visibility"] == "likely"
 
 
 class TestServerToolHandlers:
@@ -149,14 +242,23 @@ class TestToolDefinitions:
         """Test that all tools are properly defined"""
         tools = get_tool_definitions()
         
-        assert len(tools) == 5
+        assert len(tools) == 11
         tool_names = [t.name for t in tools]
         
+        # Original tools
         assert "vtk_get_class_info" in tool_names
         assert "vtk_search_classes" in tool_names
         assert "vtk_get_module_classes" in tool_names
         assert "vtk_validate_import" in tool_names
         assert "vtk_get_method_info" in tool_names
+        
+        # New tools
+        assert "vtk_get_method_doc" in tool_names
+        assert "vtk_get_class_doc" in tool_names
+        assert "vtk_get_class_synopsis" in tool_names
+        assert "vtk_get_class_action_phrase" in tool_names
+        assert "vtk_get_class_role" in tool_names
+        assert "vtk_get_class_visibility" in tool_names
         
         # Verify each tool has proper schema
         for tool in tools:

@@ -16,6 +16,11 @@ def sample_api_data():
             "class_name": "vtkPolyDataMapper",
             "module_name": "vtkmodules.vtkRenderingCore",
             "content": "**Module:** `vtkmodules.vtkRenderingCore`\n\nvtkPolyDataMapper maps polygonal data to graphics primitives.",
+            "class_doc": "vtkPolyDataMapper - map vtkPolyData to graphics primitives. Superclass: vtkMapper",
+            "synopsis": "Maps polygonal data (vtkPolyData) to graphics primitives for rendering.",
+            "action_phrase": "polygon mapping",
+            "role": "rendering",
+            "visibility": "likely",
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {
@@ -32,6 +37,11 @@ def sample_api_data():
             "class_name": "vtkActor",
             "module_name": "vtkmodules.vtkRenderingCore",
             "content": "**Module:** `vtkmodules.vtkRenderingCore`\n\nvtkActor represents an entity in a rendering scene.",
+            "class_doc": "vtkActor - represents an object in a rendered scene. Superclass: vtkProp3D",
+            "synopsis": "Represents an entity (geometry and properties) in a rendering scene.",
+            "action_phrase": "scene representation",
+            "role": "rendering",
+            "visibility": "likely",
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {
@@ -48,6 +58,11 @@ def sample_api_data():
             "class_name": "vtkSTLReader",
             "module_name": "vtkmodules.vtkIOGeometry",
             "content": "**Module:** `vtkmodules.vtkIOGeometry`\n\nvtkSTLReader reads STL files.",
+            "class_doc": "vtkSTLReader - read ASCII or binary stereo lithography files. Superclass: vtkAbstractPolyDataReader",
+            "synopsis": "Reads STL (stereolithography) files in ASCII or binary format.",
+            "action_phrase": "STL file reading",
+            "role": "io_reader",
+            "visibility": "likely",
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {

@@ -84,5 +84,93 @@ def get_tool_definitions():
                 },
                 "required": ["class_name", "method_name"]
             }
+        ),
+        Tool(
+            name="vtk_get_method_doc",
+            description="Get just the docstring for a specific method of a VTK class",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name"
+                    },
+                    "method_name": {
+                        "type": "string",
+                        "description": "Method name"
+                    }
+                },
+                "required": ["class_name", "method_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_doc",
+            description="Get the class documentation string for a VTK class",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_synopsis",
+            description="Get a brief synopsis/summary of what a VTK class does",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_action_phrase",
+            description="Get the action phrase describing what a VTK class does (e.g., 'data reading', 'mesh filtering')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_role",
+            description="Get the functional role/category of a VTK class (e.g., 'filter_extraction', 'data_unstructured', 'rendering')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_visibility",
+            description="Get the visibility/exposure level of a VTK class (e.g., 'likely', 'internal_only', 'deprecated')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
         )
     ]

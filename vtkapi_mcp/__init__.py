@@ -5,7 +5,7 @@ Provides direct access to VTK API documentation through MCP tools.
 Replaces the need for API docs in RAG retrieval.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 from .core import VTKAPIIndex
 from .validation import VTKCodeValidator, ValidationError, ValidationResult, load_validator
