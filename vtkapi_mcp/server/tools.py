@@ -136,6 +136,24 @@ def get_tool_definitions():
             }
         ),
         Tool(
+            name="vtk_get_method_signature",
+            description="Return only the canonical signature for a specific method of a VTK class (minimal payload)",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkSphereSource')"
+                    },
+                    "method_name": {
+                        "type": "string",
+                        "description": "Method name whose signature should be returned (e.g., 'GetOutput')"
+                    }
+                },
+                "required": ["class_name", "method_name"]
+            }
+        ),
+        Tool(
             name="vtk_get_class_doc",
             description="Get the class documentation string for a VTK class",
             inputSchema={

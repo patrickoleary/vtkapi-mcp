@@ -114,6 +114,16 @@ class TestVTKAPIIndex:
         doc = api_index.get_method_doc("vtkPolyDataMapper", "FakeMethod")
         assert doc is None
     
+    def test_get_method_signature_exists(self, api_index):
+        """Test retrieving method signature when method exists"""
+        signature = api_index.get_method_signature("vtkPolyDataMapper", "SetInputData")
+        assert signature == "SetInputData(self, input) -> None"
+    
+    def test_get_method_signature_not_exists(self, api_index):
+        """Test retrieving method signature for non-existent method"""
+        signature = api_index.get_method_signature("vtkPolyDataMapper", "FakeMethod")
+        assert signature is None
+    
     def test_get_class_doc_exists(self, api_index):
         """Test getting class doc for existing class"""
         doc = api_index.get_class_doc("vtkPolyDataMapper")

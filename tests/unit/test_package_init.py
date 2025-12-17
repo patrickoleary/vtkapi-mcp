@@ -62,7 +62,7 @@ class TestPackageImports:
         import vtkapi_mcp
         
         assert hasattr(vtkapi_mcp, '__version__')
-        assert vtkapi_mcp.__version__ == "1.2.0"
+        assert vtkapi_mcp.__version__ == "1.2.1"
     
     def test_core_imports_always_available(self):
         """Test that core imports are always available"""

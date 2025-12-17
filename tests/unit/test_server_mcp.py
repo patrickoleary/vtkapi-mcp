@@ -158,6 +158,36 @@ class TestVTKAPIMCPServer:
         info = json.loads(result[0].text)
         assert info["found"] is False
     
+    def test_handle_get_method_signature_exists(self, temp_api_docs_file):
+        """Test getting existing method signature"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_method_signature({
+            "class_name": "vtkPolyDataMapper",
+            "method_name": "SetInputData"
+        })
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["signature"] == "SetInputData(self, input) -> None"
+        assert set(info.keys()) == {"class_name", "method_name", "signature", "found"}
+    
+    def test_handle_get_method_signature_not_exists(self, temp_api_docs_file):
+        """Test getting non-existent method signature"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_method_signature({
+            "class_name": "vtkPolyDataMapper",
+            "method_name": "FakeMethod"
+        })
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
+        assert info["signature"] is None
+        assert "error" in info
+    
     def test_handle_get_class_doc_exists(self, temp_api_docs_file):
         """Test getting existing class doc"""
         server = VTKAPIMCPServer(temp_api_docs_file)
@@ -280,7 +310,7 @@ class TestToolDefinitions:
         """Test that all tools are properly defined"""
         tools = get_tool_definitions()
         
-        assert len(tools) == 13
+        assert len(tools) == 14
         tool_names = [t.name for t in tools]
         
         # Original tools

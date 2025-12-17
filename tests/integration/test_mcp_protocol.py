@@ -25,7 +25,7 @@ class TestMCPProtocolIntegration:
                 tools = await session.list_tools()
                 tool_names = [t.name for t in tools.tools]
                 
-                assert len(tool_names) == 13
+                assert len(tool_names) == 14
                 assert "vtk_get_class_info" in tool_names
                 assert "vtk_search_classes" in tool_names
                 assert "vtk_get_module_classes" in tool_names
@@ -191,7 +191,7 @@ class TestMCPProtocolIntegration:
                 
                 data = json.loads(result.content[0].text)
                 
-                assert data["found"] == False
+                assert not data["found"]
                 assert "error" in data
                 assert "FakeMethod" in data["error"]
     
@@ -263,7 +263,7 @@ class TestMCPProtocolIntegration:
                 
                 data = json.loads(result.content[0].text)
                 
-                assert data["valid"] == True
+                assert data["valid"]
                 assert "vtk" in data["message"].lower()
     
     async def test_mcp_search_classes_empty(self, temp_api_docs_file):
@@ -306,5 +306,5 @@ class TestMCPProtocolIntegration:
                 
                 data = json.loads(result.content[0].text)
                 
-                assert data["valid"] == False
+                assert not data["valid"]
                 assert "vtkFakeClass" in data["message"]

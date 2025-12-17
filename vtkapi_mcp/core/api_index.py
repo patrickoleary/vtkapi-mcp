@@ -184,6 +184,28 @@ class VTKAPIIndex:
         if info:
             return info.get('class_doc', '')
         return None
+
+    def get_method_signature(self, class_name: str, method_name: str) -> Optional[str]:
+        """Return the canonical signature for a method if available"""
+        methods = self.get_class_methods(class_name)
+        for method in methods:
+            if method.get('method_name') == method_name:
+                signature = method.get('signature')
+                if signature:
+                    return signature
+
+        # Fallback: extract first non-empty line from raw method info
+        info = self.get_method_info(class_name, method_name)
+        if not info:
+            return None
+
+        content = info.get('content', '')
+        for line in content.splitlines():
+            stripped = line.strip()
+            if stripped:
+                return stripped
+
+        return None
     
     def get_class_synopsis(self, class_name: str) -> Optional[str]:
         """Get a brief synopsis/summary of what a VTK class does"""

@@ -59,6 +59,9 @@ class VTKAPIMCPServer:
             elif name == "vtk_get_method_doc":
                 return self._handle_get_method_doc(arguments)
             
+            elif name == "vtk_get_method_signature":
+                return self._handle_get_method_signature(arguments)
+            
             elif name == "vtk_get_class_doc":
                 return self._handle_get_class_doc(arguments)
             
@@ -224,6 +227,21 @@ class VTKAPIMCPServer:
                 "method_name": method_name,
                 "found": False
             }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_method_signature(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_method_signature tool call"""
+        class_name = arguments["class_name"]
+        method_name = arguments["method_name"]
+        signature = self.api_index.get_method_signature(class_name, method_name)
+        result = {
+            "class_name": class_name,
+            "method_name": method_name,
+            "signature": signature,
+            "found": bool(signature)
+        }
+        if not signature:
+            result["error"] = f"Method '{method_name}' not found in class '{class_name}'"
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     def _handle_get_class_doc(self, arguments: dict) -> List[TextContent]:
