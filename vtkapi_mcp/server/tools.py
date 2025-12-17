@@ -21,6 +21,24 @@ def get_tool_definitions():
             }
         ),
         Tool(
+            name="vtk_get_class_methods",
+            description="List all methods (with signatures) for a VTK class and optionally verify a specific method",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name"
+                    },
+                    "method_name": {
+                        "type": "string",
+                        "description": "Optional method to verify existence"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
             name="vtk_search_classes",
             description="Search for VTK classes by name or keyword",
             inputSchema={
@@ -37,6 +55,20 @@ def get_tool_definitions():
                     }
                 },
                 "required": ["query"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_module",
+            description="Return the vtkmodules.* import path for a given VTK class",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
             }
         ),
         Tool(

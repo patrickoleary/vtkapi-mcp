@@ -7,7 +7,7 @@ name = "vtkapi-mcp"
 dynamic = ["version"]
 description = "VTK API validation utilities and MCP server tooling"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
     { name = "Patrick O'Leary" }
@@ -20,14 +20,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Framework :: AsyncIO",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "mcp>=1.17.0",
+    "mcp==1.24.0",
 ]
 
 [project.optional-dependencies]

@@ -41,6 +41,12 @@ class VTKAPIMCPServer:
             elif name == "vtk_search_classes":
                 return self._handle_search_classes(arguments)
             
+            elif name == "vtk_get_class_module":
+                return self._handle_get_class_module(arguments)
+            
+            elif name == "vtk_get_class_methods":
+                return self._handle_get_class_methods(arguments)
+            
             elif name == "vtk_get_module_classes":
                 return self._handle_get_module_classes(arguments)
             
@@ -98,6 +104,71 @@ class VTKAPIMCPServer:
         limit = arguments.get("limit", 10)
         results = self.api_index.search_classes(query, limit)
         return [TextContent(type="text", text=json.dumps(results, indent=2))]
+    
+    def _handle_get_class_module(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_module tool call"""
+        class_name = arguments["class_name"]
+        module = self.api_index.get_class_module(class_name)
+        
+        if module:
+            result = {
+                "class_name": class_name,
+                "module": module,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_methods(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_methods tool call"""
+        class_name = arguments["class_name"]
+        method_name = arguments.get("method_name")
+        class_info = self.api_index.get_class_info(class_name)
+        
+        if not class_info:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+        
+        methods = self.api_index.get_class_methods(class_name)
+        requested_method = None
+        if method_name:
+            requested_method = next(
+                (m for m in methods if m['method_name'] == method_name),
+                None
+            )
+            if not requested_method:
+                method_info = self.api_index.get_method_info(class_name, method_name)
+                if method_info:
+                    requested_method = {
+                        "method_name": method_name,
+                        "content": method_info.get("content"),
+                        "section": method_info.get("section")
+                    }
+        
+        result = {
+            "class_name": class_name,
+            "method_count": len(methods),
+            "methods": methods,
+            "requested_method": requested_method,
+            "method_requested": bool(method_name),
+            "found": True
+        }
+        if method_name and requested_method is None:
+            result["method_error"] = f"Method '{method_name}' not found on '{class_name}'"
+            result["method_found"] = False
+        else:
+            result["method_found"] = bool(requested_method) if method_name else None
+        
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     def _handle_get_module_classes(self, arguments: dict) -> List[TextContent]:
         """Handle vtk_get_module_classes tool call"""

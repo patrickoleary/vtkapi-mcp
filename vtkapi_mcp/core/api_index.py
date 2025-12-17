@@ -71,6 +71,25 @@ class VTKAPIIndex:
     def get_class_info(self, class_name: str) -> Optional[Dict[str, Any]]:
         """Get complete information about a VTK class"""
         return self.classes.get(class_name)
+
+    def get_class_module(self, class_name: str) -> Optional[str]:
+        """Return the vtkmodules.* path for a class"""
+        info = self.get_class_info(class_name)
+        if not info:
+            return None
+        return info.get('module') or info.get('metadata', {}).get('module_name')
+
+    def get_class_methods(self, class_name: str) -> List[Dict[str, Any]]:
+        """Return structured list of methods with signatures for a class"""
+        info = self.get_class_info(class_name)
+        if not info:
+            return []
+
+        methods = self._collect_methods_from_structured_docs(info)
+        if methods:
+            return methods
+
+        return self._collect_methods_from_content(info.get('content', ''))
     
     def search_classes(self, query: str, limit: int = 10) -> List[Dict[str, str]]:
         """
@@ -109,11 +128,11 @@ class VTKAPIIndex:
         # Check if structured_docs exists (raw format)
         metadata = info.get('metadata', {})
         structured_docs = metadata.get('structured_docs', {})
-        
+
         if structured_docs:
             # Raw format: use structured_docs
             sections = structured_docs.get('sections', {})
-            
+
             # Check all method sections
             for section_name, section_data in sections.items():
                 if 'methods' in section_data:
@@ -192,4 +211,93 @@ class VTKAPIIndex:
         info = self.classes.get(class_name)
         if info:
             return info.get('visibility', '')
-        return None
+
+    def _collect_methods_from_structured_docs(self, info: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Extract method metadata from structured_docs if present"""
+        methods: List[Dict[str, Any]] = []
+        metadata = info.get('metadata', {})
+        structured_docs = metadata.get('structured_docs', {})
+        if not structured_docs:
+            return methods
+
+        sections = structured_docs.get('sections', {})
+        for section_name, section_data in sections.items():
+            section_methods = section_data.get('methods', {})
+            for method_name, method_doc in section_methods.items():
+                signature, _, description = method_doc.partition('\n\n')
+                methods.append({
+                    'method_name': method_name,
+                    'signature': signature.strip(),
+                    'doc': description.strip(),
+                    'section': section_name
+                })
+        return methods
+
+    def _collect_methods_from_content(self, content: str) -> List[Dict[str, Any]]:
+        """Fallback parser that walks the markdown-like content to find methods"""
+        if not content:
+            return []
+
+        methods: List[Dict[str, Any]] = []
+        in_methods_section = False
+        current_name: Optional[str] = None
+        buffer: List[str] = []
+
+        lines = content.split('\n')
+        for line in lines:
+            if '## |  Methods defined here:' in line:
+                in_methods_section = True
+                current_name = None
+                buffer = []
+                continue
+
+            if not in_methods_section:
+                continue
+
+            if line.startswith('## ') and not line.startswith('###'):
+                # Leaving methods section
+                break
+
+            if line.startswith('### '):
+                if current_name:
+                    methods.append(self._build_method_entry(current_name, buffer))
+                current_name = line[4:].strip()
+                buffer = []
+                continue
+
+            if current_name is not None:
+                buffer.append(line)
+
+        if current_name:
+            methods.append(self._build_method_entry(current_name, buffer))
+
+        return [m for m in methods if m]
+
+    @staticmethod
+    def _build_method_entry(method_name: str, buffer: List[str]) -> Optional[Dict[str, Any]]:
+        """Convert buffered text into a method entry"""
+        if not buffer:
+            return None
+
+        signature = ''
+        doc_lines: List[str] = []
+        found_signature = False
+        for line in buffer:
+            stripped = line.strip()
+            if not stripped and not found_signature:
+                continue
+            if not found_signature and stripped:
+                signature = stripped
+                found_signature = True
+            else:
+                doc_lines.append(line)
+
+        if not signature:
+            return None
+
+        return {
+            'method_name': method_name,
+            'signature': signature,
+            'doc': '\n'.join(doc_lines).strip(),
+            'section': 'Methods defined here'
+        }

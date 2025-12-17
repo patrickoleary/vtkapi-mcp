@@ -63,6 +63,28 @@ class TestVTKAPIIndex:
         classes = api_index.get_module_classes("vtkmodules.vtkFakeModule")
         assert classes == []
     
+    def test_get_class_module_exists(self, api_index):
+        """Test retrieving module for existing class"""
+        module = api_index.get_class_module("vtkPolyDataMapper")
+        assert module == "vtkmodules.vtkRenderingCore"
+    
+    def test_get_class_module_not_exists(self, api_index):
+        """Test retrieving module for non-existent class"""
+        module = api_index.get_class_module("vtkFakeClass")
+        assert module is None
+    
+    def test_get_class_methods_structured(self, api_index):
+        """Test retrieving methods from structured docs"""
+        methods = api_index.get_class_methods("vtkPolyDataMapper")
+        assert len(methods) >= 1
+        names = {m["method_name"] for m in methods}
+        assert "SetInputData" in names
+    
+    def test_get_class_methods_missing_class(self, api_index):
+        """Test retrieving methods for non-existent class"""
+        methods = api_index.get_class_methods("vtkFakeClass")
+        assert methods == []
+    
     def test_get_method_info_exists(self, api_index):
         """Test getting method info for existing method"""
         info = api_index.get_method_info("vtkPolyDataMapper", "SetInputData")

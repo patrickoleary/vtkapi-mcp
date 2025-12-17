@@ -26,7 +26,7 @@ async def demo_mcp_tools():
     print("=" * 80)
     print("VTK API MCP Server Integration Demo")
     print("=" * 80)
-    print(f"\nConnecting to MCP server...")
+    print("\nConnecting to MCP server...")
     
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
@@ -124,7 +124,7 @@ async def demo_mcp_tools():
             data = json.loads(result.content[0].text)
             if 'method_name' in data:
                 print(f"✅ Method: {data['class_name']}.{data['method_name']}")
-                print(f"   Exists: Yes")
+                print("   Exists: Yes")
             print()
             
             # Demo 7: Get method info (invalid method - catches hallucination)
@@ -150,7 +150,7 @@ async def demo_mcp_tools():
             })
             data = json.loads(result.content[0].text)
             classes = data.get('classes', [])
-            print(f"Module: vtkmodules.vtkRenderingCore")
+            print("Module: vtkmodules.vtkRenderingCore")
             print(f"Classes: {len(classes)} classes")
             print(f"Sample: {', '.join(classes[:5])}")
             print()

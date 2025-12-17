@@ -25,27 +25,30 @@ else
 fi
 echo ""
 
-# Check Python version
-echo "Checking Python version..."
-python3 --version
-
-if ! command -v python3 &> /dev/null; then
-    echo "Error: Python 3 is required but not installed."
+# Ensure uv is available
+if ! command -v uv &> /dev/null; then
+    echo "Error: uv is required but was not found on your PATH."
+    echo "Install it from https://github.com/astral-sh/uv or via: curl -LsSf https://astral.sh/uv/install.sh | sh"
     exit 1
 fi
 
-# Check if virtual environment already exists
+# Check Python version (helpful for troubleshooting)
+if command -v python3 &> /dev/null; then
+    echo "Detected Python version:"
+    python3 --version
+else
+    echo "Warning: python3 command not found. uv will download/drive the required interpreter."
+fi
+
+# Create or reuse virtual environment
 if [ -d ".venv" ]; then
-    echo "Virtual environment already exists."
-    echo "To use existing: source .venv/bin/activate"
-    echo "To recreate: rm -rf .venv && ./setup.sh"
-    exit 1
+    echo "Virtual environment '.venv' already exists – reusing it."
+else
+    echo ""
+    echo "Creating virtual environment with uv..."
+    uv venv .venv
+    echo "✓ Virtual environment created"
 fi
-
-# Create virtual environment
-echo ""
-echo "Creating virtual environment..."
-python3 -m venv .venv
 
 # Activate virtual environment
 echo ""
@@ -53,24 +56,16 @@ echo "Activating virtual environment..."
 source .venv/bin/activate
 echo "✓ Virtual environment activated"
 
-# Upgrade pip
-echo ""
-echo "Upgrading pip..."
-pip install --upgrade pip
-
-# Install core requirements
-echo ""
-echo "Installing core dependencies..."
-pip install -r requirements.txt
-echo "✓ Core dependencies installed"
-
-# Install development dependencies if requested
+# Sync dependencies via uv
+SYNC_ARGS=()
 if [ "$INSTALL_DEV" = true ]; then
-    echo ""
-    echo "Installing development dependencies..."
-    pip install -r requirements-dev.txt
-    echo "✓ Development dependencies installed"
+    SYNC_ARGS+=(--extra dev)
 fi
+
+echo ""
+echo "Installing project dependencies with uv sync ${SYNC_ARGS[*]}..."
+uv sync "${SYNC_ARGS[@]}"
+echo "✓ Dependencies installed"
 
 # Check for data file
 echo ""

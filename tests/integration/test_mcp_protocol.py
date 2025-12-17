@@ -1,9 +1,7 @@
 """Integration tests for actual MCP protocol communication"""
 
-import asyncio
 import json
 import pytest
-from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
@@ -27,7 +25,7 @@ class TestMCPProtocolIntegration:
                 tools = await session.list_tools()
                 tool_names = [t.name for t in tools.tools]
                 
-                assert len(tool_names) == 11
+                assert len(tool_names) == 13
                 assert "vtk_get_class_info" in tool_names
                 assert "vtk_search_classes" in tool_names
                 assert "vtk_get_module_classes" in tool_names
@@ -82,7 +80,7 @@ class TestMCPProtocolIntegration:
                 # Parse JSON error response
                 data = json.loads(result.content[0].text)
                 
-                assert data["found"] == False
+                assert not data["found"]
                 assert "error" in data
                 assert "vtkFakeClass" in data["error"]
     
@@ -104,7 +102,7 @@ class TestMCPProtocolIntegration:
                 
                 data = json.loads(result.content[0].text)
                 
-                assert data["valid"] == True
+                assert data["valid"]
     
     async def test_mcp_validate_import_wrong_module(self, temp_api_docs_file):
         """Test detecting wrong module import via MCP protocol"""
@@ -124,7 +122,7 @@ class TestMCPProtocolIntegration:
                 
                 data = json.loads(result.content[0].text)
                 
-                assert data["valid"] == False
+                assert not data["valid"]
                 assert "suggested" in data
                 assert "vtkRenderingCore" in data["suggested"]
     

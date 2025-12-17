@@ -161,7 +161,7 @@ class TestPackageImports:
         """Test that package version is defined"""
         import vtkapi_mcp
         assert hasattr(vtkapi_mcp, '__version__')
-        assert vtkapi_mcp.__version__ == "1.0.0"
+        assert vtkapi_mcp.__version__ == "1.2.0"
     
     def test_all_exports_list(self):
         """Test __all__ exports list"""

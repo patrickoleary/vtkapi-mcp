@@ -47,6 +47,44 @@ class TestVTKAPIMCPServer:
         assert isinstance(classes, list)
         assert len(classes) > 0
     
+    def test_handle_get_class_module(self, temp_api_docs_file):
+        """Test retrieving module for a class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_module({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        payload = json.loads(result[0].text)
+        assert payload["found"] is True
+        assert payload["module"] == "vtkmodules.vtkRenderingCore"
+    
+    def test_handle_get_class_methods(self, temp_api_docs_file):
+        """Test retrieving methods for a class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_methods({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        payload = json.loads(result[0].text)
+        assert payload["found"] is True
+        assert payload["method_count"] >= 1
+        assert isinstance(payload["methods"], list)
+    
+    def test_handle_get_class_methods_specific(self, temp_api_docs_file):
+        """Test retrieving a specific method for a class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_methods({
+            "class_name": "vtkPolyDataMapper",
+            "method_name": "SetInputData"
+        })
+        
+        assert len(result) == 1
+        payload = json.loads(result[0].text)
+        assert payload["method_requested"] is True
+        assert payload["method_found"] is True
+        assert payload["requested_method"]["method_name"] == "SetInputData"
+    
     def test_handle_get_module_classes(self, temp_api_docs_file):
         """Test getting module classes"""
         server = VTKAPIMCPServer(temp_api_docs_file)
@@ -242,7 +280,7 @@ class TestToolDefinitions:
         """Test that all tools are properly defined"""
         tools = get_tool_definitions()
         
-        assert len(tools) == 11
+        assert len(tools) == 13
         tool_names = [t.name for t in tools]
         
         # Original tools
@@ -252,7 +290,9 @@ class TestToolDefinitions:
         assert "vtk_validate_import" in tool_names
         assert "vtk_get_method_info" in tool_names
         
-        # New tools
+        # Extended tools
+        assert "vtk_get_class_module" in tool_names
+        assert "vtk_get_class_methods" in tool_names
         assert "vtk_get_method_doc" in tool_names
         assert "vtk_get_class_doc" in tool_names
         assert "vtk_get_class_synopsis" in tool_names

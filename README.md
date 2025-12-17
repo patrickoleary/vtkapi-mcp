@@ -24,24 +24,35 @@ From PyPI (recommended once published):
 pip install vtkapi-mcp
 ```
 
-For local development or to include the testing/tooling stack:
+For local development we standardize on **uv** to manage the virtualenv and extras:
 
 ```bash
-pip install -e '.[dev]'
+uv venv .venv
+source .venv/bin/activate
+uv sync --extra dev      # runtime + pytest + ruff
 ```
 
 > **Note:** The 64 MB `data/vtk-python-docs.jsonl` file is required at runtime but is not bundled in the wheel. Place it under `data/` (or pass `--api-docs /path/to/file`) before launching the MCP server.
 
-Prefer automation? `./setup.sh` still creates a `.venv`, installs runtime deps, and optionally dev extras (`./setup.sh --dev`).
+Prefer automation? `./setup.sh` now wraps the same uv workflow and accepts `--dev` to include the testing toolchain.
 
 ### 2. Test MCP Integration (Optional)
 
 ```bash
-source .venv/bin/activate
-python demo_mcp_integration.py
+uv run python demo_mcp_integration.py
 ```
 
-This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 11 MCP tools and error detection.
+This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 13 MCP tools and error detection.
+
+### 3. Developer Workflow (uv-native)
+
+| Task | Command |
+|------|---------|
+| Run unit + integration tests | `uv run pytest` |
+| Run tests with coverage report | `uv run pytest --cov=vtkapi_mcp --cov-report=term-missing` |
+| Run Ruff lint & format checks | `uv run ruff check` / `uv run ruff format --check` |
+
+> These commands automatically reuse the `.venv` created via `uv venv` / `uv sync`. No manual activation is required.
 
 ### 3. Configure MCP Client
 
@@ -153,7 +164,7 @@ VTKCodeValidator
 
 ## MCP Tools Provided
 
-When running as MCP server, provides these tools:
+When running as MCP server, provides these 13 tools:
 
 ### 1. `vtk_get_class_info`
 Get complete information about a VTK class.
@@ -196,7 +207,7 @@ Search for VTK classes by name or keyword.
 ]
 ```
 
-### 3. `vtk_validate_import`
+### 5. `vtk_validate_import`
 Validate and correct VTK import statements.
 
 **Input:**
@@ -215,7 +226,7 @@ Validate and correct VTK import statements.
 }
 ```
 
-### 4. `vtk_get_method_info`
+### 6. `vtk_get_method_info`
 Get full information about a specific method including section context.
 
 **Input:**
@@ -236,7 +247,7 @@ Get full information about a specific method including section context.
 }
 ```
 
-### 5. `vtk_get_method_doc`
+### 7. `vtk_get_method_doc`
 Get just the docstring for a specific method.
 
 **Input:**
@@ -257,7 +268,7 @@ Get just the docstring for a specific method.
 }
 ```
 
-### 6. `vtk_get_class_doc`
+### 8. `vtk_get_class_doc`
 Get the class documentation string.
 
 **Input:**
@@ -276,7 +287,7 @@ Get the class documentation string.
 }
 ```
 
-### 7. `vtk_get_class_synopsis`
+### 9. `vtk_get_class_synopsis`
 Get a brief synopsis/summary of what a class does.
 
 **Input:**
@@ -295,7 +306,7 @@ Get a brief synopsis/summary of what a class does.
 }
 ```
 
-### 8. `vtk_get_class_action_phrase`
+### 10. `vtk_get_class_action_phrase`
 Get the action phrase describing what a class does.
 
 **Input:**
@@ -314,7 +325,7 @@ Get the action phrase describing what a class does.
 }
 ```
 
-### 9. `vtk_get_class_role`
+### 11. `vtk_get_class_role`
 Get the functional role/category of a class.
 
 **Input:**
@@ -333,7 +344,7 @@ Get the functional role/category of a class.
 }
 ```
 
-### 10. `vtk_get_class_visibility`
+### 12. `vtk_get_class_visibility`
 Get the visibility/exposure level of a class.
 
 **Input:**
@@ -352,7 +363,7 @@ Get the visibility/exposure level of a class.
 }
 ```
 
-### 11. `vtk_get_module_classes`
+### 13. `vtk_get_module_classes`
 List all classes in a specific module.
 
 **Input:**
