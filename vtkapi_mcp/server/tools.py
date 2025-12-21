@@ -222,5 +222,47 @@ def get_tool_definitions():
                 },
                 "required": ["class_name"]
             }
+        ),
+        Tool(
+            name="vtk_get_class_input_datatype",
+            description="Get the input data type for a VTK class (e.g., 'vtkPolyData', 'vtkImageData')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkPolyDataMapper')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_output_datatype",
+            description="Get the output data type for a VTK class (e.g., 'vtkPolyData', 'vtkImageData')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkContourFilter')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_get_class_semantic_methods",
+            description="Get semantically tagged methods for a VTK class (e.g., input setters, output getters, configuration methods)",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "VTK class name (e.g., 'vtkContourFilter')"
+                    }
+                },
+                "required": ["class_name"]
+            }
         )
     ]

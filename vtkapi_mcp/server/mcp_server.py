@@ -77,6 +77,15 @@ class VTKAPIMCPServer:
             elif name == "vtk_get_class_visibility":
                 return self._handle_get_class_visibility(arguments)
             
+            elif name == "vtk_get_class_input_datatype":
+                return self._handle_get_class_input_datatype(arguments)
+            
+            elif name == "vtk_get_class_output_datatype":
+                return self._handle_get_class_output_datatype(arguments)
+            
+            elif name == "vtk_get_class_semantic_methods":
+                return self._handle_get_class_semantic_methods(arguments)
+            
             else:
                 return [TextContent(type="text", text=f"Unknown tool: {name}")]
     
@@ -329,6 +338,63 @@ class VTKAPIMCPServer:
             result = {
                 "class_name": class_name,
                 "visibility": visibility,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_input_datatype(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_input_datatype tool call"""
+        class_name = arguments["class_name"]
+        input_datatype = self.api_index.get_class_input_datatype(class_name)
+        
+        if input_datatype is not None:
+            result = {
+                "class_name": class_name,
+                "input_datatype": input_datatype,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_output_datatype(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_output_datatype tool call"""
+        class_name = arguments["class_name"]
+        output_datatype = self.api_index.get_class_output_datatype(class_name)
+        
+        if output_datatype is not None:
+            result = {
+                "class_name": class_name,
+                "output_datatype": output_datatype,
+                "found": True
+            }
+        else:
+            result = {
+                "error": f"Class '{class_name}' not found in VTK API",
+                "class_name": class_name,
+                "found": False
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_get_class_semantic_methods(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_get_class_semantic_methods tool call"""
+        class_name = arguments["class_name"]
+        semantic_methods = self.api_index.get_class_semantic_methods(class_name)
+        
+        if semantic_methods is not None:
+            result = {
+                "class_name": class_name,
+                "semantic_methods": semantic_methods,
                 "found": True
             }
         else:

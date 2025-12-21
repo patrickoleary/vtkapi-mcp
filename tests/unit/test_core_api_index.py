@@ -175,6 +175,48 @@ class TestVTKAPIIndex:
         """Test getting class visibility for non-existent class"""
         visibility = api_index.get_class_visibility("vtkFakeClass")
         assert visibility is None
+    
+    def test_get_class_input_datatype_exists(self, api_index):
+        """Test getting class input datatype for existing class"""
+        input_datatype = api_index.get_class_input_datatype("vtkPolyDataMapper")
+        assert input_datatype == "vtkPolyData"
+    
+    def test_get_class_input_datatype_empty(self, api_index):
+        """Test getting class input datatype when empty"""
+        input_datatype = api_index.get_class_input_datatype("vtkSTLReader")
+        assert input_datatype == ""
+    
+    def test_get_class_input_datatype_not_exists(self, api_index):
+        """Test getting class input datatype for non-existent class"""
+        input_datatype = api_index.get_class_input_datatype("vtkFakeClass")
+        assert input_datatype is None
+    
+    def test_get_class_output_datatype_exists(self, api_index):
+        """Test getting class output datatype for existing class"""
+        output_datatype = api_index.get_class_output_datatype("vtkSTLReader")
+        assert output_datatype == "vtkPolyData"
+    
+    def test_get_class_output_datatype_empty(self, api_index):
+        """Test getting class output datatype when empty"""
+        output_datatype = api_index.get_class_output_datatype("vtkPolyDataMapper")
+        assert output_datatype == ""
+    
+    def test_get_class_output_datatype_not_exists(self, api_index):
+        """Test getting class output datatype for non-existent class"""
+        output_datatype = api_index.get_class_output_datatype("vtkFakeClass")
+        assert output_datatype is None
+    
+    def test_get_class_semantic_methods_exists(self, api_index):
+        """Test getting class semantic methods for existing class"""
+        semantic_methods = api_index.get_class_semantic_methods("vtkPolyDataMapper")
+        assert semantic_methods is not None
+        assert "input_setters" in semantic_methods
+        assert "SetInputData" in semantic_methods["input_setters"]
+    
+    def test_get_class_semantic_methods_not_exists(self, api_index):
+        """Test getting class semantic methods for non-existent class"""
+        semantic_methods = api_index.get_class_semantic_methods("vtkFakeClass")
+        assert semantic_methods is None
 
 
 class TestAPIIndexComprehensive:

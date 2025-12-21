@@ -42,7 +42,7 @@ Prefer automation? `./setup.sh` now wraps the same uv workflow and accepts `--de
 uv run python demo_mcp_integration.py
 ```
 
-This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 13 MCP tools and error detection.
+This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 17 MCP tools and error detection.
 
 ### 3. Developer Workflow (uv-native)
 
@@ -76,7 +76,7 @@ Add to your MCP settings (e.g., Claude Desktop config):
 
 ### 4. Use VTK Tools
 
-The MCP server provides 11 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
+The MCP server provides 17 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
 
 ---
 
@@ -107,7 +107,7 @@ vtkapi_mcp/
 | File | Purpose |
 |------|---------|
 | `demo_mcp_integration.py` | Demo showing proper MCP integration (not standalone) |
-| `requirements.txt` | Python dependencies |
+| `pyproject.toml` | Python package configuration and dependencies |
 | `README.md` | This file |
 
 ### Data
@@ -164,7 +164,7 @@ VTKCodeValidator
 
 ## MCP Tools Provided
 
-When running as MCP server, provides these 13 tools:
+When running as MCP server, provides these 17 tools:
 
 ### 1. `vtk_get_class_info`
 Get complete information about a VTK class.
@@ -382,6 +382,86 @@ List all classes in a specific module.
 }
 ```
 
+### 14. `vtk_get_class_module`
+Return the vtkmodules.* import path for a given VTK class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "module": "vtkmodules.vtkRenderingCore",
+  "found": true
+}
+```
+
+### 15. `vtk_get_class_input_datatype`
+Get the input data type for a VTK class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "input_datatype": "vtkPolyData",
+  "found": true
+}
+```
+
+### 16. `vtk_get_class_output_datatype`
+Get the output data type for a VTK class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkContourFilter"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkContourFilter",
+  "output_datatype": "vtkPolyData",
+  "found": true
+}
+```
+
+### 17. `vtk_get_class_semantic_methods`
+Get semantically tagged methods for a VTK class (input setters, output getters, configuration methods).
+
+**Input:**
+```json
+{
+  "class_name": "vtkContourFilter"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkContourFilter",
+  "semantic_methods": {
+    "input_setters": ["SetInputData", "SetInputConnection"],
+    "output_getters": ["GetOutput", "GetOutputPort"],
+    "configuration": ["SetValue", "SetNumberOfContours"]
+  },
+  "found": true
+}
+```
+
 ---
 
 ## Benefits Over RAG Retrieval
@@ -454,7 +534,10 @@ Each line is a VTK class documentation in JSON format:
   "synopsis": "Maps polygonal data (vtkPolyData) to graphics primitives for rendering.",
   "action_phrase": "polygon mapping",
   "role": "rendering",
-  "visibility": "likely",
+  "visibility_score": "likely",
+  "input_datatype": "vtkPolyData",
+  "output_datatype": "",
+  "semantic_methods": { "input_setters": [...], "output_getters": [...] },
   "structured_docs": { "sections": { ... } }
 }
 ```

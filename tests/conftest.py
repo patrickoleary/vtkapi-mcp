@@ -20,7 +20,14 @@ def sample_api_data():
             "synopsis": "Maps polygonal data (vtkPolyData) to graphics primitives for rendering.",
             "action_phrase": "polygon mapping",
             "role": "rendering",
-            "visibility": "likely",
+            "visibility_score": "likely",
+            "input_datatype": "vtkPolyData",
+            "output_datatype": "",
+            "semantic_methods": {
+                "input_setters": ["SetInputData", "SetInputConnection"],
+                "output_getters": [],
+                "configuration": ["Update"]
+            },
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {
@@ -41,7 +48,14 @@ def sample_api_data():
             "synopsis": "Represents an entity (geometry and properties) in a rendering scene.",
             "action_phrase": "scene representation",
             "role": "rendering",
-            "visibility": "likely",
+            "visibility_score": "likely",
+            "input_datatype": "",
+            "output_datatype": "",
+            "semantic_methods": {
+                "input_setters": ["SetMapper"],
+                "output_getters": ["GetMapper"],
+                "configuration": ["SetPosition"]
+            },
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {
@@ -62,7 +76,14 @@ def sample_api_data():
             "synopsis": "Reads STL (stereolithography) files in ASCII or binary format.",
             "action_phrase": "STL file reading",
             "role": "io_reader",
-            "visibility": "likely",
+            "visibility_score": "likely",
+            "input_datatype": "",
+            "output_datatype": "vtkPolyData",
+            "semantic_methods": {
+                "input_setters": ["SetFileName"],
+                "output_getters": ["GetOutputPort"],
+                "configuration": ["Update"]
+            },
             "structured_docs": {
                 "sections": {
                     "Methods defined here": {

@@ -253,6 +253,70 @@ class TestVTKAPIMCPServer:
         info = json.loads(result[0].text)
         assert info["found"] is True
         assert info["visibility"] == "likely"
+    
+    def test_handle_get_class_input_datatype(self, temp_api_docs_file):
+        """Test getting class input datatype"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_input_datatype({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["input_datatype"] == "vtkPolyData"
+    
+    def test_handle_get_class_input_datatype_not_exists(self, temp_api_docs_file):
+        """Test getting class input datatype for non-existent class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_input_datatype({"class_name": "vtkFakeClass"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
+    
+    def test_handle_get_class_output_datatype(self, temp_api_docs_file):
+        """Test getting class output datatype"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_output_datatype({"class_name": "vtkSTLReader"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert info["output_datatype"] == "vtkPolyData"
+    
+    def test_handle_get_class_output_datatype_not_exists(self, temp_api_docs_file):
+        """Test getting class output datatype for non-existent class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_output_datatype({"class_name": "vtkFakeClass"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
+    
+    def test_handle_get_class_semantic_methods(self, temp_api_docs_file):
+        """Test getting class semantic methods"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_semantic_methods({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is True
+        assert "semantic_methods" in info
+        assert "input_setters" in info["semantic_methods"]
+    
+    def test_handle_get_class_semantic_methods_not_exists(self, temp_api_docs_file):
+        """Test getting class semantic methods for non-existent class"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_get_class_semantic_methods({"class_name": "vtkFakeClass"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["found"] is False
 
 
 class TestServerToolHandlers:
@@ -310,7 +374,7 @@ class TestToolDefinitions:
         """Test that all tools are properly defined"""
         tools = get_tool_definitions()
         
-        assert len(tools) == 14
+        assert len(tools) == 17
         tool_names = [t.name for t in tools]
         
         # Original tools
@@ -329,6 +393,9 @@ class TestToolDefinitions:
         assert "vtk_get_class_action_phrase" in tool_names
         assert "vtk_get_class_role" in tool_names
         assert "vtk_get_class_visibility" in tool_names
+        assert "vtk_get_class_input_datatype" in tool_names
+        assert "vtk_get_class_output_datatype" in tool_names
+        assert "vtk_get_class_semantic_methods" in tool_names
         
         # Verify each tool has proper schema
         for tool in tools:

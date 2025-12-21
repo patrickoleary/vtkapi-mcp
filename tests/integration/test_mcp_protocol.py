@@ -25,7 +25,7 @@ class TestMCPProtocolIntegration:
                 tools = await session.list_tools()
                 tool_names = [t.name for t in tools.tools]
                 
-                assert len(tool_names) == 14
+                assert len(tool_names) == 17
                 assert "vtk_get_class_info" in tool_names
                 assert "vtk_search_classes" in tool_names
                 assert "vtk_get_module_classes" in tool_names
@@ -37,6 +37,9 @@ class TestMCPProtocolIntegration:
                 assert "vtk_get_class_action_phrase" in tool_names
                 assert "vtk_get_class_role" in tool_names
                 assert "vtk_get_class_visibility" in tool_names
+                assert "vtk_get_class_input_datatype" in tool_names
+                assert "vtk_get_class_output_datatype" in tool_names
+                assert "vtk_get_class_semantic_methods" in tool_names
     
     async def test_mcp_get_class_info_valid(self, temp_api_docs_file):
         """Test getting valid class info via MCP protocol"""
