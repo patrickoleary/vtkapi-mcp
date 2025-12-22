@@ -42,7 +42,7 @@ Prefer automation? `./setup.sh` now wraps the same uv workflow and accepts `--de
 uv run python demo_mcp_integration.py
 ```
 
-This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 17 MCP tools and error detection.
+This runs a complete demo showing how to use vtkapi-mcp as an MCP server (not as standalone Python library). It demonstrates all 18 MCP tools and error detection.
 
 ### 3. Developer Workflow (uv-native)
 
@@ -76,7 +76,7 @@ Add to your MCP settings (e.g., Claude Desktop config):
 
 ### 4. Use VTK Tools
 
-The MCP server provides 17 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
+The MCP server provides 18 tools for VTK API validation and lookup. See [MCP Tools](#mcp-tools-provided) below.
 
 ---
 
@@ -164,7 +164,7 @@ VTKCodeValidator
 
 ## MCP Tools Provided
 
-When running as MCP server, provides these 17 tools:
+When running as MCP server, provides these 18 tools:
 
 ### 1. `vtk_get_class_info`
 Get complete information about a VTK class.
@@ -459,6 +459,24 @@ Get semantically tagged methods for a VTK class (input setters, output getters, 
     "configuration": ["SetValue", "SetNumberOfContours"]
   },
   "found": true
+}
+```
+
+### 18. `vtk_is_a_class`
+Check if a given name is a valid VTK class.
+
+**Input:**
+```json
+{
+  "class_name": "vtkPolyDataMapper"
+}
+```
+
+**Output:**
+```json
+{
+  "class_name": "vtkPolyDataMapper",
+  "is_vtk_class": true
 }
 ```
 

@@ -197,7 +197,7 @@ def get_tool_definitions():
         ),
         Tool(
             name="vtk_get_class_role",
-            description="Get the functional role/category of a VTK class (e.g., 'filter_extraction', 'data_unstructured', 'rendering')",
+            description="Get the pipeline role of a VTK class. Returns one of: input, filter, properties, renderer, scene, infrastructure, output, utility, color",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -211,7 +211,7 @@ def get_tool_definitions():
         ),
         Tool(
             name="vtk_get_class_visibility",
-            description="Get the visibility/exposure level of a VTK class (e.g., 'likely', 'internal_only', 'deprecated')",
+            description="Get the visibility score of a VTK class (0.0-1.0). Higher scores indicate classes more likely to be used directly.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -253,13 +253,27 @@ def get_tool_definitions():
         ),
         Tool(
             name="vtk_get_class_semantic_methods",
-            description="Get semantically tagged methods for a VTK class (e.g., input setters, output getters, configuration methods)",
+            description="Get non-boilerplate callable methods for a VTK class. Excludes dunder methods, private methods, and VTK infrastructure methods.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "class_name": {
                         "type": "string",
                         "description": "VTK class name (e.g., 'vtkContourFilter')"
+                    }
+                },
+                "required": ["class_name"]
+            }
+        ),
+        Tool(
+            name="vtk_is_a_class",
+            description="Check if a given name is a valid VTK class. Returns true if it exists in the VTK API, false otherwise.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "class_name": {
+                        "type": "string",
+                        "description": "Name to check (e.g., 'vtkPolyDataMapper')"
                     }
                 },
                 "required": ["class_name"]

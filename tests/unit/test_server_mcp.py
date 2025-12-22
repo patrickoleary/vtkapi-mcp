@@ -318,6 +318,28 @@ class TestVTKAPIMCPServer:
         info = json.loads(result[0].text)
         assert info["found"] is False
 
+    def test_handle_is_a_class_true(self, temp_api_docs_file):
+        """Test checking if a valid VTK class exists"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_is_a_class({"class_name": "vtkPolyDataMapper"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["class_name"] == "vtkPolyDataMapper"
+        assert info["is_vtk_class"] is True
+
+    def test_handle_is_a_class_false(self, temp_api_docs_file):
+        """Test checking if an invalid class name returns false"""
+        server = VTKAPIMCPServer(temp_api_docs_file)
+        
+        result = server._handle_is_a_class({"class_name": "vtkFakeClass"})
+        
+        assert len(result) == 1
+        info = json.loads(result[0].text)
+        assert info["class_name"] == "vtkFakeClass"
+        assert info["is_vtk_class"] is False
+
 
 class TestServerToolHandlers:
     """Test all server tool handler methods"""
@@ -374,7 +396,7 @@ class TestToolDefinitions:
         """Test that all tools are properly defined"""
         tools = get_tool_definitions()
         
-        assert len(tools) == 17
+        assert len(tools) == 18
         tool_names = [t.name for t in tools]
         
         # Original tools
@@ -396,6 +418,7 @@ class TestToolDefinitions:
         assert "vtk_get_class_input_datatype" in tool_names
         assert "vtk_get_class_output_datatype" in tool_names
         assert "vtk_get_class_semantic_methods" in tool_names
+        assert "vtk_is_a_class" in tool_names
         
         # Verify each tool has proper schema
         for tool in tools:

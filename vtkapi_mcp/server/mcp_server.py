@@ -86,6 +86,9 @@ class VTKAPIMCPServer:
             elif name == "vtk_get_class_semantic_methods":
                 return self._handle_get_class_semantic_methods(arguments)
             
+            elif name == "vtk_is_a_class":
+                return self._handle_is_a_class(arguments)
+            
             else:
                 return [TextContent(type="text", text=f"Unknown tool: {name}")]
     
@@ -98,8 +101,13 @@ class VTKAPIMCPServer:
             result = {
                 "class_name": info['class_name'],
                 "module": info['module'],
-                "content_preview": info['content'][:500] + "...",
-                "methods": info.get('methods', [])
+                "class_doc": info.get('class_doc', ''),
+                "synopsis": info.get('synopsis', ''),
+                "role": info.get('role', ''),
+                "visibility_score": info.get('visibility_score', ''),
+                "input_datatype": info.get('input_datatype', ''),
+                "output_datatype": info.get('output_datatype', ''),
+                "content": info['content']
             }
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
         else:
@@ -403,6 +411,16 @@ class VTKAPIMCPServer:
                 "class_name": class_name,
                 "found": False
             }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    def _handle_is_a_class(self, arguments: dict) -> List[TextContent]:
+        """Handle vtk_is_a_class tool call"""
+        class_name = arguments["class_name"]
+        exists = self.api_index.get_class_info(class_name) is not None
+        result = {
+            "class_name": class_name,
+            "is_vtk_class": exists
+        }
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     async def run(self):

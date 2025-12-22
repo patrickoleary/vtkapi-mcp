@@ -25,7 +25,7 @@ class TestMCPProtocolIntegration:
                 tools = await session.list_tools()
                 tool_names = [t.name for t in tools.tools]
                 
-                assert len(tool_names) == 17
+                assert len(tool_names) == 18
                 assert "vtk_get_class_info" in tool_names
                 assert "vtk_search_classes" in tool_names
                 assert "vtk_get_module_classes" in tool_names
@@ -62,7 +62,7 @@ class TestMCPProtocolIntegration:
                 
                 assert data["class_name"] == "vtkPolyDataMapper"
                 assert "module" in data
-                assert "content_preview" in data
+                assert "content" in data
     
     async def test_mcp_get_class_info_invalid(self, temp_api_docs_file):
         """Test getting invalid class via MCP protocol returns proper error"""

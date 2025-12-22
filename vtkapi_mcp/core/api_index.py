@@ -57,7 +57,10 @@ class VTKAPIIndex:
                     'synopsis': doc.get('synopsis', ''),
                     'action_phrase': doc.get('action_phrase', ''),
                     'role': doc.get('role', ''),
-                    'visibility_score': doc.get('visibility_score', '')
+                    'visibility_score': doc.get('visibility_score', 0.3),
+                    'input_datatype': doc.get('input_datatype', ''),
+                    'output_datatype': doc.get('output_datatype', ''),
+                    'semantic_methods': doc.get('semantic_methods', []),
                 }
                 
                 # Index by module
@@ -239,21 +242,21 @@ class VTKAPIIndex:
         """Get the input data type for a VTK class"""
         info = self.classes.get(class_name)
         if info:
-            return info.get('metadata', {}).get('input_datatype', '')
+            return info.get('input_datatype', '')
         return None
 
     def get_class_output_datatype(self, class_name: str) -> Optional[str]:
         """Get the output data type for a VTK class"""
         info = self.classes.get(class_name)
         if info:
-            return info.get('metadata', {}).get('output_datatype', '')
+            return info.get('output_datatype', '')
         return None
 
-    def get_class_semantic_methods(self, class_name: str) -> Optional[Dict[str, Any]]:
+    def get_class_semantic_methods(self, class_name: str) -> Optional[List[str]]:
         """Get the semantic methods for a VTK class"""
         info = self.classes.get(class_name)
         if info:
-            return info.get('metadata', {}).get('semantic_methods', {})
+            return info.get('semantic_methods', [])
         return None
 
     def _collect_methods_from_structured_docs(self, info: Dict[str, Any]) -> List[Dict[str, Any]]:
